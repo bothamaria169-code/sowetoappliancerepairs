@@ -1,5 +1,7 @@
 # Never in GitHub
 config/secrets.php
+# Guides contain the admin password
+*.pdf
 *.env
 .env*
 _private/

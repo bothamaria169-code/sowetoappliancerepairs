@@ -37,6 +37,7 @@ function adminOpen(string $active, string $title, string $sub = '', string $acti
         'Setup' => [
             ['settings',  'settings.php', 'fa-sliders',      'Settings', 0],
             ['emails',    'emails.php',   'fa-envelope-open-text', 'Sent log', $failed],
+            ['guide',     'guide.php',    'fa-book',         'Guide', 0],
             ['account',   'account.php',  'fa-user-gear',    'My account', 0],
             ['audit',     'audit.php',    'fa-clock-rotate-left', 'Audit log', 0],
         ],
