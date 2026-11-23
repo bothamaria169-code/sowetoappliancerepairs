@@ -23,7 +23,7 @@ $wa = "Hi, I need an appliance repaired in {$name}.";
 $trail = [['Areas', 'areas'], [$name, 'areas/' . $slug]];
 siteOpen("Appliance Repairs {$name} | Fridge, Washing Machine, Stove", [
     'path' => 'areas/' . $slug, 'crumbs' => $trail, 'preload' => APP_URL . '/assets/img/work/' . $cover . '.webp',
-    'description' => excerpt("Fridge, washing machine, stove, oven and geyser repairs in {$name} at your home. Same day, {$g}-month guarantee. R{$c} call-out, free if we repair.", 160),
+    'description' => excerpt("Fridge, washing machine, stove, oven, microwave and geyser repairs in {$name} at your home. Same day, {$g}-month guarantee. R{$c} call-out, free if we repair.", 160),
     'schema' => [faqSchema($faqs), ['@context' => 'https://schema.org', '@type' => 'Service', 'name' => "Appliance repairs in {$name}", 'serviceType' => 'Appliance repair', 'provider' => ['@id' => APP_URL . '/#business'],
         'areaServed' => ['@type' => 'City', 'name' => $name, 'containedInPlace' => ['@type' => 'AdministrativeArea', 'name' => 'Gauteng']]]],
 ]);

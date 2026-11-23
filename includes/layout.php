@@ -8,7 +8,7 @@ declare(strict_types=1);
 const LCD_MAP = [
     '0' => 'abcdef', '1' => 'bc', '2' => 'abdeg', '3' => 'abcdg', '4' => 'bcfg', '5' => 'acdfg', '6' => 'acdefg', '7' => 'abc', '8' => 'abcdefg', '9' => 'abcdfg',
     'A' => 'abcefg', 'b' => 'cdefg', 'B' => 'cdefg', 'C' => 'adef', 'c' => 'deg', 'd' => 'bcdeg', 'D' => 'bcdeg', 'E' => 'adefg', 'F' => 'aefg', 'f' => 'aefg', 'H' => 'bcefg', 'I' => 'bc',
-    'L' => 'def', 'n' => 'ceg', 'N' => 'ceg', 'o' => 'cdeg', 'O' => 'abcdef', 'P' => 'abefg', 'r' => 'eg', 'R' => 'eg', 'S' => 'acdfg', 't' => 'defg', 'T' => 'defg', 'U' => 'bcdef', 'u' => 'cde', 'h' => 'cefg', '-' => 'g', ' ' => '', '°' => 'abfg',
+    'L' => 'def', 'n' => 'ceg', 'N' => 'ceg', 'o' => 'cdeg', 'O' => 'abcdef', 'P' => 'abefg', 'r' => 'eg', 'R' => 'eg', 'S' => 'acdfg', 't' => 'defg', 'T' => 'defg', 'U' => 'bcdef', 'u' => 'cde', 'h' => 'cefg', '-' => 'g', ':' => '', ' ' => '', '°' => 'abfg',
 ];
 
 /** A seven-segment display drawn in SVG. */
@@ -20,13 +20,15 @@ function lcd(string $text, string $class = '', string $label = ''): string
     ];
     $chars = preg_split('//u', $text, -1, PREG_SPLIT_NO_EMPTY);
     $out = '';
+    $shift = 0;
     foreach ($chars as $i => $c) {
+        if ($c === ':') { $out .= '<rect class="on" x="' . ($i * 27 - $shift + 1) . '" y="11" width="5" height="5"/><rect class="on" x="' . ($i * 27 - $shift - 1) . '" y="26" width="5" height="5"/>'; $shift += 17; continue; }
         $on = LCD_MAP[$c] ?? '';
-        $out .= '<g transform="translate(' . ($i * 27) . ' 0) skewX(-4)">';
+        $out .= '<g transform="translate(' . ($i * 27 - $shift) . ' 0) skewX(-4)">';
         foreach ($seg as $k => $pts) $out .= '<polygon class="' . (str_contains($on, $k) ? 'on' : 'off') . '" data-s="' . $k . '" points="' . $pts . '"/>';
         $out .= '</g>';
     }
-    $w = count($chars) * 27;
+    $w = count($chars) * 27 - $shift;
     return '<svg class="lcd ' . e($class) . '" viewBox="-4 -1 ' . ($w + 3) . ' 44" ' . ($label !== '' ? 'role="img" aria-label="' . e($label) . '"' : 'aria-hidden="true"') . '>' . $out . '</svg>';
 }
 
@@ -38,6 +40,7 @@ function icon(string $name): string
         'washer' => '<rect x="8" y="5" width="32" height="38" rx="4"/><path d="M8 14h32M14 9.5h6"/><circle cx="24" cy="28" r="9"/><path d="M16 29c3-3 5 2 8 0s5-3 8-1"/><circle cx="34" cy="9.5" r="1"/>',
         'stove' => '<rect x="6" y="8" width="36" height="32" rx="4"/><circle cx="16" cy="18" r="5"/><circle cx="32" cy="18" r="5"/><circle cx="16" cy="31" r="4"/><circle cx="32" cy="31" r="5"/>',
         'oven' => '<rect x="7" y="5" width="34" height="38" rx="4"/><path d="M7 15h34M14 10h.01M20 10h.01M28 10h6"/><rect x="13" y="22" width="22" height="14" rx="2"/><path d="M14 19h20"/>',
+        'microwave' => '<rect x="4" y="10" width="40" height="28" rx="4"/><rect x="9" y="16" width="22" height="16" rx="2"/><path d="M36 10v28M39.9 17h.2M39.9 23h.2M39.9 29h.2M10 38v3M38 38v3"/>',
         'geyser' => '<rect x="5" y="13" width="38" height="22" rx="11"/><path d="M14 35v7M34 35v7M14 13V7M34 13V7M20 24h8"/><circle cx="24" cy="24" r="5"/>',
     ];
     return '<svg class="ico" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' . ($p[$name] ?? '') . '</svg>';
@@ -264,7 +267,7 @@ function siteClose(string $scripts = ''): void
   <div class="wrap foot__grid">
     <div>
       <?= logo('logo--light') ?>
-      <p>We repair fridges, washing machines, stoves, ovens and geysers at your home in Soweto and around Johannesburg.</p>
+      <p>We repair fridges, washing machines, stoves, ovens, microwaves and geysers at your home in Soweto and around Johannesburg.</p>
       <ul class="foot__facts"><li>Same-day service</li><li><?= $g ?>-month guarantee</li><li>Open 7 days</li></ul>
     </div>
     <div><h3>Repairs</h3><?php foreach (services() as $slug => $s): ?><a href="<?= APP_URL . '/' . $slug ?>"><?= e($s['name']) ?></a><?php endforeach; ?><a href="<?= APP_URL ?>/error-codes">Error codes</a><a href="<?= APP_URL ?>/faults">Fault finder</a></div>

@@ -29,7 +29,7 @@ siteOpen($s['name'] . ' in Soweto & Joburg | Same Day, R' . $c, [
 <section class="top"><div class="wrap top__in">
   <div><?= crumbs([['Repairs', 'services'], [$s['name'], $slug]]) ?><h1><?= e($s['name']) ?> in Soweto &amp; Joburg</h1><p class="sub"><?= e($s['lead']) ?></p>
     <div class="row"><?= waButton($wa, 'WhatsApp us', 'btn btn-wa btn-lg') ?><a class="btn btn-glass btn-lg" href="<?= APP_URL ?>/book?service=<?= $slug ?>">Book online</a></div></div>
-  <div class="top__img"><?= photo($s['photo'], $s['name'], '', '(max-width: 820px) 100vw, 420px', true) ?><div class="meter"><?= lcd($s['lcd']) ?></div></div>
+  <div class="top__img<?= $slug === 'microwave-repairs' ? ' top__img--wide' : '' ?>"><?= photo($s['photo'], $s['name'], '', '(max-width: 820px) 100vw, 420px', true) ?><div class="meter"><?= lcd($s['lcd']) ?></div></div>
 </div></section>
 
 <section class="sec"><div class="wrap split">

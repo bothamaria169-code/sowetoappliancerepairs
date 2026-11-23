@@ -7,9 +7,9 @@ A lead-generating website for a mobile appliance repair service. It takes bookin
 | Area | Where |
 |---|---|
 | Home page with the fault tester | `index.php` |
-| 5 repair pages (`/fridge-repairs` …) | `service.php` |
+| 6 repair pages (`/fridge-repairs` …) | `service.php` |
 | 20 area pages (`/areas/soweto` …) | `area.php`, list in `areas.php` |
-| 22 fault guides (`/faults/…`) | `fault.php`, list in `faults.php`, text in `includes/faults.php` |
+| 26 fault guides (`/faults/…`) | `fault.php`, list in `faults.php`, text in `includes/faults.php` |
 | Error code lookup | `error-codes.php` |
 | Booking form | `book.php` |
 | Prices, Our work, Reviews, About, Contact | `prices.php`, `our-work.php`, `reviews.php`, `about.php`, `contact.php` |
@@ -26,10 +26,10 @@ A lead-generating website for a mobile appliance repair service. It takes bookin
 
 ## How the traffic engine works
 
-1. The **Topic queue** holds 40 real searches to start with. When fewer than 6 are left, the AI suggests more.
+1. The **Topic queue** holds 45 real searches to start with. When fewer than 6 are left, the AI suggests more.
 2. On **Tuesday and Friday from 07:00**, cron takes the next topic.
 3. The AI writes from the site's own fault guides. A **quality gate** rejects invented prices, unknown error codes, unsafe advice, certificate claims, thin text and near-duplicates. A **second AI** then reads it as a safety editor.
-4. Fridge, washing machine and general articles go live by themselves. **Stove, oven and geyser articles wait as drafts** until you press **Publish**, because mains electricity is involved. Change this in 🟩 **Settings → Article writer**.
+4. Fridge, washing machine and general articles go live by themselves. **Stove, oven, microwave and geyser articles wait as drafts** until you press **Publish**, because mains electricity is involved. Change this in 🟩 **Settings → Article writer**.
 5. New pages go into the sitemap and are sent to Bing through IndexNow. If Facebook is connected, they are shared there.
 
 ## Run it locally (XAMPP)

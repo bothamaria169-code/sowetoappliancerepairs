@@ -130,7 +130,7 @@ Follow the sections in order. Each one ends with a test.
 ## Every week (10 min)
 
 1. 🟩 **Bookings**: call back everything marked **New**.
-2. 🟩 **Articles**: read the drafts (stove, oven and geyser) and press **Publish**.
+2. 🟩 **Articles**: read the drafts (stove, oven, microwave and geyser) and press **Publish**.
 3. 🟩 **Photos**: add two photos from the week's jobs.
 4. Send your review link to each happy customer.
 5. 🟩 **SEO & visits**: see which pages bring people in, and add similar topics to the **Topic queue**.

@@ -57,6 +57,17 @@ function services(): array
             ],
             'common' => ['Oven does not heat', 'Only grill works', 'Uneven baking', 'Overheats', 'Door will not close', 'Fan noisy or dead', 'Trips the electricity', 'Light or timer dead'],
         ],
+        'microwave-repairs' => [
+            'name' => 'Microwave repairs', 'short' => 'Microwave', 'icon' => 'microwave', 'lcd' => '0:30',
+            'photo' => 'microwave', 'photos' => ['board-multimeter'],
+            'lead' => 'Runs but does not heat, sparks inside, a plate that will not turn or buttons that do nothing. We test it and tell you honestly whether it is worth repairing.',
+            'body' => [
+                ['Runs but does not heat', 'The light is on, the plate turns, the fan blows and the food stays cold. The fault is in the high-voltage part that makes the heat, and it needs a technician with the right meter.'],
+                ['Sparks and burning smells', 'Sparks often come from a burnt or greasy wave guide cover, the small cardboard-like plate on the inside wall, or from metal in the oven. Switch it off at once. Left running, a small spark can burn through the wall of the oven.'],
+                ['Please do not open it', 'A microwave holds a dangerous charge even after it has been unplugged. The cover must stay on until a technician has made it safe.'],
+            ],
+            'common' => ['Does not heat', 'Sparks inside', 'Plate does not turn', 'Buttons do not work', 'Door will not close', 'Dead, no lights', 'Stops after a few seconds', 'Loud humming'],
+        ],
         'geyser-repairs' => [
             'name' => 'Geyser repairs', 'short' => 'Geyser', 'icon' => 'geyser', 'lcd' => '60',
             'photo' => 'geyser-pair', 'photos' => ['geysers', 'board-multimeter'],
@@ -156,7 +167,7 @@ function siteFaqs(): array
         ['Do you come to my home?', 'Yes. We are a mobile service. The technician comes to your house, flat or complex and repairs the appliance there, so you do not need a bakkie.'],
         ['Can you come today?', 'We offer same-day service, seven days a week. The earlier in the day you WhatsApp or call, the better the chance of an early slot.'],
         ['Is the repair guaranteed?', "Yes, our repairs carry a {$g}-month guarantee."],
-        ['Which appliances do you repair?', 'Fridges and freezers, washing machines, stoves and hobs, ovens and geysers.'],
+        ['Which appliances do you repair?', 'Fridges and freezers, washing machines, stoves and hobs, ovens, microwaves and geysers.'],
         ['Which areas do you cover?', 'Soweto and 19 other areas around Johannesburg, from Randfontein in the west to Benoni and Brakpan in the east. See the full list on our areas page.'],
         ['What should I send you on WhatsApp?', 'Your area, what the appliance is doing (or not doing), and a photo of the appliance and its model sticker. A short video of the noise or the display helps a lot.'],
         ['Is it worth repairing an old appliance?', 'Often, yes. Many faults are a small part such as a fan, pump, plate or thermostat. Once we have tested it we will tell you the price so that you can decide.'],

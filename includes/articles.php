@@ -48,7 +48,7 @@ function articleSystemPrompt(): string
 You are a senior South African home-appliance technician who writes clear, useful articles for the website of Soweto Appliance Repairs, a mobile repair service.
 
 FACTS YOU MAY USE (nothing else about the company):
-- Mobile service: the technician comes to the customer's home. Repairs fridges and freezers, washing machines, stoves, ovens and geysers.
+- Mobile service: the technician comes to the customer's home. Repairs fridges and freezers, washing machines, stoves, ovens, microwaves and geysers.
 - Call-out R{$c}, free if we do the repair. Same-day service. Open 7 days. {$g}-month guarantee on repairs.
 - Areas: {$areas}.
 - WhatsApp or call {$GLOBALS['SAR_PHONE']}.
@@ -59,7 +59,7 @@ WRITING RULES
 - 850 to 1150 words in total. 5 to 7 sections. Each section heading says something specific. No numbers in headings. No horizontal rules.
 - Use lists for steps and checks. Use concrete details: sounds, smells, where to look, what to note down.
 - The VERIFIED NOTES in the brief are your only source for causes, owner checks and warnings. Explain them in your own words and in more detail, but do not add other owner checks, causes, codes, temperatures, time limits or technical claims.
-- Owner checks are only: looking, listening, smelling, settings on the front, filters and hoses on washing machines, door seals, plugs and sockets, breakers, levelling, cleaning surfaces, moving food or the appliance. Never tell the reader to open, unscrew or remove any cover or panel, adjust a geyser thermostat, touch or test a valve, element, wire, capacitor, compressor or gas part, or to reset a tripping breaker again and again.
+- Owner checks are only: looking, listening, smelling, settings on the front, filters and hoses on washing machines, door seals, plugs and sockets, breakers, levelling, cleaning surfaces, moving food or the appliance. Never tell the reader to open, unscrew or remove any cover or panel, adjust a geyser thermostat, touch or test a valve, element, wire, capacitor, compressor or gas part, take the cover off a microwave (it stays dangerous when unplugged) or run one empty, or to reset a tripping breaker again and again.
 - South African stoves and geysers are wired in, not plugged in, so never say to unplug a stove, oven or geyser: say switch it off at the wall isolator or the distribution board.
 - Say clearly when to switch off and call a technician.
 - About the company, use only the FACTS. No dispatchers, receipts, arrival times, spares carried or processes that are not listed.
@@ -117,9 +117,9 @@ function writeArticle(array $topic, ?int $adminId = null): array
     $s = $db->prepare('SELECT COUNT(*) FROM posts WHERE slug = ?');
     $s->execute([$slug]);
     if ($s->fetchColumn()) $slug .= '-' . bin2hex(random_bytes(2));
-    // Mains-powered heat (stove, oven, geyser) waits for a human unless the owner says otherwise.
+    // Mains-powered heat (stove, oven, microwave, geyser) waits for a human unless the owner says otherwise.
     $mode = get_setting('articles_review', 'risky');
-    $publish = $mode === 'none' || ($mode === 'risky' && !in_array($topic['service'], ['stove-repairs', 'oven-repairs', 'geyser-repairs'], true));
+    $publish = $mode === 'none' || ($mode === 'risky' && !in_array($topic['service'], ['stove-repairs', 'oven-repairs', 'microwave-repairs', 'geyser-repairs'], true));
     $n = (int) $db->query('SELECT COUNT(*) FROM posts')->fetchColumn();
     $db->prepare('INSERT INTO posts (slug, title, meta_title, meta_description, excerpt, body, faqs, keyword, service, area, cover, source, is_published, published_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
        ->execute([$slug, $post['title'], $post['meta_title'], $post['meta_description'], $post['excerpt'], $post['body'], json_encode($post['faqs'], JSON_UNESCAPED_UNICODE),
@@ -172,7 +172,7 @@ function editorIssues(array $post, string $brief, ?int $adminId): array
         . '(3) a company claim that is not in the FACTS (prices, arrival times, certificates, experience, processes); '
         . '(4) steps that do not make sense. Explaining the notes in more words, general cleaning tips and telling people to call us are fine. '
         . 'Answer ONLY with JSON {"issues":["short quote from the draft: what is wrong"]}. Use an empty list when there is nothing serious. At most 6 issues.';
-    $facts = 'FACTS: mobile service at the home; fridges, freezers, washing machines, stoves, ovens, geysers; call-out R' . callout() . ' free if we repair; same-day service; 7 days; ' . biz('biz_guarantee') . '-month guarantee; price given after testing; phone and WhatsApp ' . biz('biz_phone') . '; Soweto and 19 other Johannesburg areas.';
+    $facts = 'FACTS: mobile service at the home; fridges, freezers, washing machines, stoves, ovens, microwaves, geysers; call-out R' . callout() . ' free if we repair; same-day service; 7 days; ' . biz('biz_guarantee') . '-month guarantee; price given after testing; phone and WhatsApp ' . biz('biz_phone') . '; Soweto and 19 other Johannesburg areas.';
     $faq = implode("\n", array_map(fn($f) => "Q: {$f['q']} A: {$f['a']}", $post['faqs']));
     $r = patientGroq($sys, "{$facts}\n{$brief}\nDRAFT\n{$post['title']}\n{$post['body']}\n{$faq}", 900);
     logAi($adminId, 'editor', $r['ok']);
@@ -372,7 +372,7 @@ function linkTerms(string $html, array $skip = []): string
 {
     $terms = [
         'fridge repairs' => 'fridge-repairs', 'washing machine repairs' => 'washing-machine-repairs', 'stove repairs' => 'stove-repairs',
-        'oven repairs' => 'oven-repairs', 'geyser repairs' => 'geyser-repairs', 'error codes' => 'error-codes', 'error code' => 'error-codes', 'fault code' => 'error-codes',
+        'oven repairs' => 'oven-repairs', 'geyser repairs' => 'geyser-repairs', 'microwave repairs' => 'microwave-repairs', 'error codes' => 'error-codes', 'error code' => 'error-codes', 'fault code' => 'error-codes',
         'call-out' => 'prices', 'not cooling' => 'faults/fridge-not-cooling', 'not draining' => 'faults/washing-machine-not-draining',
         'no hot water' => 'faults/no-hot-water', 'earth leakage' => 'faults/stove-tripping-power', 'door seal' => 'faults/freezer-ice-build-up', 'drain pump' => 'faults/washing-machine-not-draining',
     ];

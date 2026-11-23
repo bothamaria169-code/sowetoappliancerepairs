@@ -6,7 +6,7 @@ declare(strict_types=1);
  * deploy; no SQL import needed. Works on MySQL 8 and MariaDB. No table or
  * column is named after a MySQL 8 reserved word.
  */
-const SCHEMA_VERSION = 1;
+const SCHEMA_VERSION = 2;
 
 function runMigrations(PDO $db): void
 {
@@ -16,6 +16,7 @@ function runMigrations(PDO $db): void
         if ((int) $db->query("SELECT GET_LOCK('sar_migrate', 10)")->fetchColumn() !== 1) return;
         try {
             if ($v < 1) { migrationV1($db); seedTopics($db); seedPosts($db); }
+            elseif ($v < 2) seedTopics($db);   // microwave topics
             $db->prepare("REPLACE INTO app_settings (k, v) VALUES ('schema_version', ?)")->execute([(string) SCHEMA_VERSION]);
         } finally {
             $db->query("SELECT RELEASE_LOCK('sar_migrate')");

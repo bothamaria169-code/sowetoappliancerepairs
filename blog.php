@@ -15,7 +15,7 @@ if ($page > 1 && !$posts) notFound();
 
 siteOpen(($topic ? services()[$topic]['short'] . ' Advice' : 'Appliance Advice') . ' for Joburg Homes' . ($page > 1 ? ", page {$page}" : ''), [
     'path' => 'blog' . ($topic || $page > 1 ? '?' . http_build_query(array_filter(['topic' => $topic, 'page' => $page > 1 ? $page : null])) : ''), 'crumbs' => [['Advice', 'blog']],
-    'description' => 'Plain-language advice on fridges, washing machines, stoves, ovens and geysers: what went wrong, what to check and when to call.',
+    'description' => 'Plain-language advice on fridges, washing machines, stoves, ovens, microwaves and geysers: what went wrong, what to check and when to call.',
 ]);
 ?>
 <section class="top top--plain"><div class="wrap top__in"><div><?= crumbs([['Advice', 'blog']]) ?><h1>Advice before you spend</h1><p class="sub">What went wrong, what to check and when to call.</p></div></div></section>

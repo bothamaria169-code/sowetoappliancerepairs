@@ -19,7 +19,7 @@ foreach (services() as $slug => $s) {
 
 siteOpen('Appliance Repairs in Soweto & Joburg | Same Day, R' . $c . ' Call-Out', [
     'path' => '', 'class' => 'home',
-    'description' => "Fridge, washing machine, stove, oven and geyser repairs at your home in Soweto and Johannesburg. Same-day service, {$g}-month guarantee. R{$c} call-out, free if we repair.",
+    'description' => "Fridge, washing machine, stove, oven, microwave and geyser repairs at your home in Soweto and Johannesburg. Same-day service, {$g}-month guarantee. R{$c} call-out, free if we repair.",
     'preload' => APP_URL . '/assets/img/work/board-multimeter.webp',
     'schema' => [faqSchema($faqs), ['@context' => 'https://schema.org', '@type' => 'WebSite', 'name' => APP_NAME, 'url' => APP_URL . '/']],
 ]);
@@ -29,7 +29,7 @@ siteOpen('Appliance Repairs in Soweto & Joburg | Same Day, R' . $c . ' Call-Out'
   <div class="wrap hero__in">
     <div class="hero__txt">
       <h1>Appliance repairs in Soweto <em>&amp; Joburg</em></h1>
-      <p class="hero__lead">We come to your home and fix the fridge, washing machine, stove, oven or geyser right there. Same day, seven days a week.</p>
+      <p class="hero__lead">We come to your home and fix the fridge, washing machine, stove, oven, microwave or geyser right there. Same day, seven days a week.</p>
       <div class="hero__btns">
         <?= waButton('Hi, I need an appliance repaired.', 'WhatsApp us', 'btn btn-wa btn-lg') ?>
         <a class="btn btn-flame btn-lg" href="<?= APP_URL ?>/book">Book a repair</a>
@@ -48,7 +48,7 @@ siteOpen('Appliance Repairs in Soweto & Joburg | Same Day, R' . $c . ' Call-Out'
   </div>
 </section>
 
-<div class="marquee" aria-hidden="true"><div class="marquee__in"><?php for ($i = 0; $i < 2; $i++): ?><span>Fridges</span><i></i><span>Washing machines</span><i></i><span>Stoves</span><i></i><span>Ovens</span><i></i><span>Geysers</span><i></i><span><?= e($g) ?>-month guarantee</span><i></i><span>Same-day service</span><i></i><?php endfor; ?></div></div>
+<div class="marquee" aria-hidden="true"><div class="marquee__in"><?php for ($i = 0; $i < 2; $i++): ?><span>Fridges</span><i></i><span>Washing machines</span><i></i><span>Stoves</span><i></i><span>Ovens</span><i></i><span>Microwaves</span><i></i><span>Geysers</span><i></i><span><?= e($g) ?>-month guarantee</span><i></i><span>Same-day service</span><i></i><?php endfor; ?></div></div>
 
 <section class="sec finder" id="finder">
   <div class="wrap finder__grid">
@@ -87,7 +87,7 @@ siteOpen('Appliance Repairs in Soweto & Joburg | Same Day, R' . $c . ' Call-Out'
 
 <section class="sec">
   <div class="wrap">
-    <div class="sec__head"><h2>Five appliances. One call.</h2></div>
+    <div class="sec__head"><h2>Six appliances. One call.</h2></div>
     <div class="lineup"><?= photo('lineup', 'Fridge, stove, oven and washing machines repaired by Soweto Appliance Repairs', '', '(max-width: 1240px) 100vw, 1200px') ?></div>
     <div class="five"><?php foreach (services() as $slug => $s): ?><a href="<?= APP_URL . '/' . $slug ?>"><?= icon($s['icon']) ?><h3><?= e($s['short']) ?></h3><p><?= e(ucfirst(implode(', ', array_map('lcfirst', array_slice($s['common'], 0, 2))))) ?></p></a><?php endforeach; ?></div>
   </div>

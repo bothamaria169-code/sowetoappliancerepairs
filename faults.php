@@ -4,7 +4,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/includes/boot.php';
 siteOpen('Appliance Fault Finder: What Is Wrong and What to Check', [
     'path' => 'faults', 'crumbs' => [['Fault finder', 'faults']],
-    'description' => 'Find out why your fridge, washing machine, stove, oven or geyser stopped working. Likely causes and safe checks before you pay for a repair.',
+    'description' => 'Find out why your fridge, washing machine, stove, oven, microwave or geyser stopped working. Likely causes and safe checks before you pay for a repair.',
 ]);
 ?>
 <section class="top top--plain"><div class="wrap top__in"><div><?= crumbs([['Fault finder', 'faults']]) ?><h1>Fault finder</h1><p class="sub">Choose what your appliance is doing. Each guide gives the likely causes, safe things you can check and when to switch it off.</p><div class="row"><a class="btn btn-flame" href="<?= APP_URL ?>/error-codes">Look up an error code</a></div></div></div></section>

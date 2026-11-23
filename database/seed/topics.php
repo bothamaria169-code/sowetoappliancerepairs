@@ -42,5 +42,10 @@ return [
     ['Hard-working machines: how to look after a washing machine in a big household', 'washing machine maintenance tips', 'washing-machine-repairs', null],
     ['Ten habits that keep a fridge running longer', 'fridge maintenance tips', 'fridge-repairs', null],
     ['What to ask a technician before you agree to a repair', 'questions to ask appliance repair technician', null, null],
+    ['Microwave runs but does not heat: what it usually means', 'microwave not heating', 'microwave-repairs', null],
+    ['Is it worth repairing a microwave in South Africa?', 'is it worth repairing a microwave', 'microwave-repairs', null],
+    ['Why is my microwave sparking, and is it safe to use?', 'microwave sparking inside', 'microwave-repairs', null],
+    ['Microwave repairs in Soweto: what to check before you book', 'microwave repairs soweto', 'microwave-repairs', 'soweto'],
+    ['Microwave plate not turning: simple checks', 'microwave plate not turning', 'microwave-repairs', null],
     ['Should you buy a second-hand fridge? What to check', 'buying second hand fridge south africa', 'fridge-repairs', null],
 ];

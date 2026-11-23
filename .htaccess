@@ -33,7 +33,7 @@ AddType image/webp .webp
 
   # Clean addresses
   RewriteRule ^(services|areas|faults|error-codes|our-work|prices|about|contact|book|blog|reviews|privacy|terms|login)$ $1.php [L,QSA]
-  RewriteRule ^(fridge-repairs|washing-machine-repairs|stove-repairs|oven-repairs|geyser-repairs)$ service.php?s=$1 [L,QSA]
+  RewriteRule ^(fridge-repairs|washing-machine-repairs|stove-repairs|oven-repairs|microwave-repairs|geyser-repairs)$ service.php?s=$1 [L,QSA]
   RewriteRule ^areas/([a-z0-9-]+)$ area.php?s=$1 [L,QSA]
   RewriteRule ^faults/([a-z0-9-]+)$ fault.php?s=$1 [L,QSA]
   RewriteRule ^blog/([a-z0-9-]+)$ post.php?s=$1 [L,QSA]

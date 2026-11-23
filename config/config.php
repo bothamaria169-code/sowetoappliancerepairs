@@ -19,7 +19,7 @@ function secret(string $key, mixed $default = ''): mixed
 
 // ── App ──────────────────────────────────────────────────────────
 define('APP_NAME', 'Soweto Appliance Repairs');
-define('APP_TAGLINE', 'Fridge, washing machine, stove, oven and geyser repairs at your home in Soweto and Joburg. Same-day service, 9-month guarantee.');
+define('APP_TAGLINE', 'Fridge, washing machine, stove, oven, microwave and geyser repairs at your home in Soweto and Joburg. Same-day service, 9-month guarantee.');
 define('LIVE_DOMAIN', 'sowetoappliancerepairs.co.za');
 define('BASE_DIR', dirname(__DIR__));
 
