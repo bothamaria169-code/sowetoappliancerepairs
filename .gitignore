@@ -1,0 +1,22 @@
+# Never in GitHub
+config/secrets.php
+*.env
+.env*
+_private/
+
+# Uploaded photos live on the server only
+uploads/media/*
+!uploads/media/.gitkeep
+
+# Client originals (phone photos, print PDFs): web copies are in assets/img
+images/
+
+# Tooling and junk
+.claude/
+shots/
+*.zip
+*.log
+*.sql
+error_log
+.DS_Store
+Thumbs.db

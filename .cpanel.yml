@@ -1,0 +1,9 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=$HOME/public_html/
+    - /bin/mkdir -p $DEPLOYPATH
+    - /bin/cp -R admin ajax assets classes config database includes $DEPLOYPATH
+    - /bin/cp index.php service.php services.php area.php areas.php fault.php faults.php error-codes.php our-work.php prices.php about.php contact.php book.php blog.php post.php reviews.php privacy.php terms.php login.php logout.php forgot-password.php reset-password.php cron.php cover.php sitemap.php feed.php textfile.php 404.php .htaccess favicon.ico $DEPLOYPATH
+    - /bin/mkdir -p ${DEPLOYPATH}uploads/media
+    - /bin/cp uploads/.htaccess ${DEPLOYPATH}uploads/.htaccess

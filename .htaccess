@@ -1,0 +1,73 @@
+Options -Indexes -MultiViews
+DirectoryIndex index.php
+AddType image/webp .webp
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Code and data are never served directly
+  RewriteRule ^(config|includes|classes|database|docs|images|scripts|_private|\.git|\.claude)(/|$) - [F,L]
+  RewriteRule ^router\.php$ - [F,L]
+
+  # One address for every page: no www, and https once the certificate works
+  # (https starts when an empty file called https-on.txt exists next to this file; see the setup guide)
+  RewriteCond %{DOCUMENT_ROOT}/https-on.txt -f
+  RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+  RewriteRule ^ https://%1%{REQUEST_URI} [R=301,L]
+  RewriteCond %{DOCUMENT_ROOT}/https-on.txt -f
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+  RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+  RewriteRule ^ http://%1%{REQUEST_URI} [R=301,L]
+
+  # /services.php → /services
+  RewriteCond %{THE_REQUEST} ^GET\s/(?:.*/)?(services|areas|faults|error-codes|our-work|prices|about|contact|book|blog|reviews|privacy|terms|login)\.php[\s?] [NC]
+  RewriteRule ^(services|areas|faults|error-codes|our-work|prices|about|contact|book|blog|reviews|privacy|terms|login)\.php$ /$1 [R=301,L]
+  RewriteCond %{THE_REQUEST} ^GET\s/index\.php[\s?]
+  RewriteRule ^index\.php$ / [R=301,L]
+  # Trailing slash → none (not for real folders)
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_URI} ^(.+)/$
+  RewriteRule ^ %1 [R=301,L]
+
+  # Clean addresses
+  RewriteRule ^(services|areas|faults|error-codes|our-work|prices|about|contact|book|blog|reviews|privacy|terms|login)$ $1.php [L,QSA]
+  RewriteRule ^(fridge-repairs|washing-machine-repairs|stove-repairs|oven-repairs|geyser-repairs)$ service.php?s=$1 [L,QSA]
+  RewriteRule ^areas/([a-z0-9-]+)$ area.php?s=$1 [L,QSA]
+  RewriteRule ^faults/([a-z0-9-]+)$ fault.php?s=$1 [L,QSA]
+  RewriteRule ^blog/([a-z0-9-]+)$ post.php?s=$1 [L,QSA]
+  RewriteRule ^sitemap\.xml$ sitemap.php [L]
+  RewriteRule ^feed\.xml$ feed.php [L]
+  RewriteRule ^(robots|llms)\.txt$ textfile.php?f=$1 [L]
+  RewriteRule ^([a-f0-9]{32})\.txt$ textfile.php?f=$1 [L]
+</IfModule>
+
+ErrorDocument 404 /404.php
+
+<FilesMatch "(\.(sql|md|lock|phar|log|bak|env|json|py|sh|ini|yml|zip)|^\.cpanel\.yml|^\.git.*|^\.ht.*)$">
+  Require all denied
+</FilesMatch>
+
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+</IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript text/javascript application/json image/svg+xml application/xml text/plain
+</IfModule>
+
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType text/javascript "access plus 1 year"
+  ExpiresByType image/webp "access plus 90 days"
+  ExpiresByType image/jpeg "access plus 30 days"
+  ExpiresByType image/png "access plus 90 days"
+  ExpiresByType image/svg+xml "access plus 90 days"
+  ExpiresByType image/x-icon "access plus 90 days"
+</IfModule>
