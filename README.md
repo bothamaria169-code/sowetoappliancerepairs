@@ -47,7 +47,11 @@ A lead-generating website for a mobile appliance repair service. It takes bookin
 
 🟧 cPanel → **Git™ Version Control** → **Manage** → **Pull or Deploy** → **Update from Remote** → **Deploy HEAD Commit**. Deploys never touch `config/secrets.php` or `uploads/media`.
 
-First time? Follow [docs/SETUP-GUIDE.md](docs/SETUP-GUIDE.md).
+First time? Follow [docs/SETUP-GUIDE.md](docs/SETUP-GUIDE.md), or the PDF guide with screenshots.
+
+## PDF guide
+
+`python docs/build-guide.py` (site running on localhost:8790) takes the screenshots and makes `_private/Soweto-Appliance-Repairs-Guide.pdf` and `config/guide.pdf`. The PDF holds the admin password, so it is never in GitHub. Upload `guide.pdf` to `public_html/config` and it opens in **Admin → Guide**. Screenshots are in `docs/guide/`; add real cPanel screenshots there and build again.
 
 ## Troubleshooting
 

@@ -45,7 +45,8 @@ Follow the sections in order. Each one ends with a test.
 2. Leave **Clone a Repository** on. Paste the three values from the table above → **Create**.
 3. **Manage** → **Pull or Deploy** → **Update from Remote** → **Deploy HEAD Commit**.
 4. **File Manager** → `public_html/config` → **Upload** → choose your `secrets.php`.
-5. **Select PHP Version** (or **MultiPHP Manager**) → **8.2**. Extensions needed: `curl`, `gd`, `mbstring`, `pdo_mysql`, `exif`.
+5. Upload `guide.pdf` to the same folder. It opens in 🟩 **Guide**.
+6. **Select PHP Version** (or **MultiPHP Manager**) → **8.2**. Extensions needed: `curl`, `gd`, `mbstring`, `pdo_mysql`, `exif`.
 
 > **The repository is private?** cPanel cannot clone it with the plain address. Make it public on GitHub, or use a GitHub token in the Clone URL.
 > **Error `"" is not a valid "branch"`?** cPanel → **Terminal** → `cd ~/repositories/sowetoappliancerepairs && git fetch origin && git checkout -B main origin/main`, then refresh **Pull or Deploy**.
