@@ -11,7 +11,7 @@ $fields = [
     'articles' => ['articles_on', 'articles_review', 'article_hour'],
     'ai'       => ['ai_enabled', 'ai_monthly_limit', 'groq_model'],
     'email'    => ['notify_email', 'smtp_host', 'smtp_port', 'smtp_user', 'mail_from_name'],
-    'tracking' => ['gsc_verification', 'bing_verification', 'ga4_id', 'ads_id', 'meta_pixel_id'],
+    'tracking' => ['gsc_verification', 'bing_verification', 'ga4_id', 'ads_id', 'ads_wa_label', 'meta_pixel_id'],
     'photos'   => [],
 ];
 $secrets = ['email' => ['smtp_pass'], 'ai' => ['groq_api_key']];
@@ -43,6 +43,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (in_array($k, $links, true) && $v !== '' && !preg_match('#^https://#', $v)) { flash('error', 'Links must start with https://'); continue; }
             if (in_array($k, ['biz_callout', 'biz_guarantee', 'biz_whatsapp', 'article_hour', 'ai_monthly_limit'], true)) $v = preg_replace('/\D/', '', $v);
             if (in_array($k, ['gsc_verification', 'bing_verification'], true) && preg_match('/content="([^"]+)"/', $v, $m)) $v = $m[1];
+            if (in_array($k, ['ads_id', 'ads_wa_label'], true) && $v !== '') {
+                if (!preg_match($k === 'ads_id' ? '#AW-\d+#' : '#AW-\d+/[\w-]+#', $v, $m)) { flash('error', $k === 'ads_id' ? 'The Google Ads ID looks like AW-123456789.' : 'The WhatsApp conversion looks like AW-123456789/AbCdEf. You can paste the whole event snippet.'); continue; }
+                $v = $m[0];
+            }
             set_setting($k, $v);
         }
         if ($tab === 'articles') set_setting('article_days', implode(',', array_intersect($week, (array) ($_POST['article_days'] ?? []))));
@@ -76,7 +80,7 @@ adminOpen('settings', 'Settings', 'Changes apply straight away.');
 <?php elseif ($tab === 'email'): ?>
   <div class="form-grid"><?= $in('notify_email', 'Send bookings to', '', ADMIN_EMAIL, 'email') . $in('mail_from_name', 'From name', '', APP_NAME) . $in('smtp_user', 'Sending mailbox', '', SMTP_USER) . $sec('smtp_pass', 'Mailbox password', 'blank keeps the saved one') . $in('smtp_host', 'Mail server', '', SMTP_HOST) . $in('smtp_port', 'Port', '465 or 587', (string) SMTP_PORT) ?><div class="field"><label for="test_to">Send the test to</label><input id="test_to" type="email" name="test_to" placeholder="<?= e($ADMIN['email']) ?>"></div></div>
 <?php elseif ($tab === 'tracking'): ?>
-  <?= $in('gsc_verification', 'Google Search Console code', 'paste the whole meta tag or just the code') . $in('bing_verification', 'Bing Webmaster code') . $in('ga4_id', 'Google Analytics 4', 'G-…') . $in('ads_id', 'Google Ads', 'AW-…') . $in('meta_pixel_id', 'Meta Pixel', 'numbers only') ?>
+  <?= $in('gsc_verification', 'Google Search Console code', 'paste the whole meta tag or just the code') . $in('bing_verification', 'Bing Webmaster code') . $in('ga4_id', 'Google Analytics 4', 'G-…') . $in('ads_id', 'Google Ads', 'AW-…') . $in('ads_wa_label', 'Google Ads: WhatsApp click', 'AW-…/label, or paste the whole event snippet') . $in('meta_pixel_id', 'Meta Pixel', 'numbers only') ?>
 <?php else: ?>
   <div class="status-line <?= ImageKit::ready() ? 'ok' : 'off' ?>"><span class="dot"></span><?= ImageKit::ready() ? 'Keys found in config/secrets.php' : 'No ImageKit keys in config/secrets.php' ?></div><p class="hint" style="margin-bottom:1rem">Photos you add under Photos are also sent to ImageKit, which serves them fast and in the right size.</p>
 <?php endif; ?>

@@ -22,8 +22,8 @@ AddType image/webp .webp
   RewriteRule ^ http://%1%{REQUEST_URI} [R=301,L]
 
   # /services.php → /services
-  RewriteCond %{THE_REQUEST} ^GET\s/(?:.*/)?(services|areas|faults|error-codes|our-work|prices|about|contact|book|blog|reviews|privacy|terms|login)\.php[\s?] [NC]
-  RewriteRule ^(services|areas|faults|error-codes|our-work|prices|about|contact|book|blog|reviews|privacy|terms|login)\.php$ /$1 [R=301,L]
+  RewriteCond %{THE_REQUEST} ^GET\s/(?:.*/)?(services|areas|faults|error-codes|our-work|prices|about|contact|book|thank-you|blog|reviews|privacy|terms|login)\.php[\s?] [NC]
+  RewriteRule ^(services|areas|faults|error-codes|our-work|prices|about|contact|book|thank-you|blog|reviews|privacy|terms|login)\.php$ /$1 [R=301,L]
   RewriteCond %{THE_REQUEST} ^GET\s/index\.php[\s?]
   RewriteRule ^index\.php$ / [R=301,L]
   # Trailing slash → none (not for real folders)
@@ -32,7 +32,7 @@ AddType image/webp .webp
   RewriteRule ^ %1 [R=301,L]
 
   # Clean addresses
-  RewriteRule ^(services|areas|faults|error-codes|our-work|prices|about|contact|book|blog|reviews|privacy|terms|login)$ $1.php [L,QSA]
+  RewriteRule ^(services|areas|faults|error-codes|our-work|prices|about|contact|book|thank-you|blog|reviews|privacy|terms|login)$ $1.php [L,QSA]
   RewriteRule ^(fridge-repairs|washing-machine-repairs|stove-repairs|oven-repairs|microwave-repairs|geyser-repairs)$ service.php?s=$1 [L,QSA]
   RewriteRule ^areas/([a-z0-9-]+)$ area.php?s=$1 [L,QSA]
   RewriteRule ^faults/([a-z0-9-]+)$ fault.php?s=$1 [L,QSA]

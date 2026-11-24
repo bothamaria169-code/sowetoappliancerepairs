@@ -40,7 +40,11 @@
     var a = e.target.closest('[data-tap]'); if (!a) return;
     var d = new FormData(); d.append('kind', a.dataset.tap); d.append('path', location.pathname);
     if (navigator.sendBeacon) navigator.sendBeacon(SAR.url + '/ajax/tap.php', d);
-    if (window.gtag) gtag('event', 'generate_lead', { method: a.dataset.tap });
+    if (window.gtag) {
+      gtag('event', a.dataset.tap === 'whatsapp' ? 'whatsapp_click' : 'call_click', { method: a.dataset.tap });
+      // A WhatsApp from the thank-you page is the same customer as the booking: not a second lead for Google Ads
+      if (a.dataset.tap === 'whatsapp' && SAR.adsWa && !/\/thank-you$/.test(location.pathname)) gtag('event', 'conversion', { send_to: SAR.adsWa });
+    }
     if (window.fbq) fbq('track', 'Contact');
   });
 

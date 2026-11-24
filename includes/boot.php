@@ -14,3 +14,4 @@ if (!isset($_SESSION['first_ref'])) {
     $ref = (string) ($_SERVER['HTTP_REFERER'] ?? '');
     $_SESSION['first_ref'] = $ref !== '' && !str_starts_with($ref, APP_URL) ? mb_substr(strtok($ref, '?'), 0, 250) : 'Direct';
 }
+if (!empty($_GET['gclid']) || !empty($_GET['gbraid']) || !empty($_GET['wbraid'])) $_SESSION['first_ref'] = 'Google Ads';

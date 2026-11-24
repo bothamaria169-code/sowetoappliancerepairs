@@ -11,7 +11,8 @@ A lead-generating website for a mobile appliance repair service. It takes bookin
 | 20 area pages (`/areas/soweto` …) | `area.php`, list in `areas.php` |
 | 26 fault guides (`/faults/…`) | `fault.php`, list in `faults.php`, text in `includes/faults.php` |
 | Error code lookup | `error-codes.php` |
-| Booking form | `book.php` |
+| Booking form and Google Ads landing pages (`/book?service=fridge-repairs` …) | `book.php` |
+| Thank-you page (only after a booking; Google Ads counts it) | `thank-you.php` |
 | Prices, Our work, Reviews, About, Contact | `prices.php`, `our-work.php`, `reviews.php`, `about.php`, `contact.php` |
 | Articles | `blog.php`, `post.php` |
 | Article writer | `includes/articles.php` (quality gate + safety editor) |

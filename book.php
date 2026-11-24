@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     foreach (array_keys($in) as $k) $in[$k] = postText($k, $k === 'problem' ? 2000 : 190);
     $phone = preg_replace('/[^\d+]/', '', $in['phone']);
     if (!csrfValid()) $errors[] = 'Your session expired. Please send it again.';
-    if (!empty($_POST['website'])) redirect('book?ref=thanks');   // bots fill the hidden field
+    if (!empty($_POST['website'])) redirect('book');   // bots fill the hidden field
     if (!isset(services()[$in['service']])) $errors[] = 'Choose the appliance.';
     if (!isset(areas()[$in['area']]) && $in['area'] !== 'other') $errors[] = 'Choose your area.';
     if (mb_strlen($in['full_name']) < 2) $errors[] = 'Enter your name.';
@@ -37,23 +37,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         sendMail(get_setting('notify_email', ADMIN_EMAIL), "New booking {$ref}: " . services()[$in['service']]['short'] . ' in ' . $area, emailLayout('New booking', emailRows($rows), 'Open in admin', APP_URL . '/admin/bookings.php?q=' . $ref), [], $in['email'] ?: null, 'booking');
         if ($in['email']) sendMail($in['email'], "We got your booking {$ref}", emailLayout('Thank you, ' . e(explode(' ', $in['full_name'])[0]), '<p>We have your request and will call or WhatsApp you to arrange a time. Need us sooner? Call or WhatsApp ' . e(biz('biz_phone')) . '.</p>' . emailRows($rows)), [], null, 'booking_copy');
         $_SESSION['last_booking'] = $rows;
-        redirect('book?ref=' . $ref);
+        $_SESSION['booking_uncounted'] = true;
+        redirect('thank-you');
     }
 }
 
-$done = isset($_GET['ref']) ? ($_SESSION['last_booking'] ?? []) : null;
-siteOpen('Book an Appliance Repair in Soweto & Joburg', [
-    'path' => 'book', 'crumbs' => [['Book a repair', 'book']], 'description' => 'Book a same-day appliance repair in Soweto or Johannesburg. R' . callout() . ' call-out, free if we repair.', 'noindex' => $done !== null,
+// /book?service=fridge-repairs is the Google Ads landing page for that appliance: same form, matching headline.
+$svc = services()[$in['service']] ?? null;
+$wa = 'Hi, I need ' . ($svc ? 'my ' . lcfirst($svc['short']) : 'an appliance') . ' repaired. I am in ';
+siteOpen($svc ? $svc['name'] . ' in Soweto & Joburg | Book Today' : 'Book an Appliance Repair in Soweto & Joburg', [
+    'path' => 'book', 'crumbs' => [['Book a repair', 'book']], 'description' => 'Book a same-day appliance repair in Soweto or Johannesburg. R' . callout() . ' call-out, free if we repair.',
 ]);
-
-if ($done !== null):
-    $text = $done ? "Hi, I booked online. Ref {$done['Reference']}. {$done['Appliance']} in {$done['Area']}. Problem: {$done['Problem']}" : 'Hi, I booked a repair online.';
 ?>
-<section class="sec"><div class="wrap done"><div class="meter"><?= lcd('donE', '', 'Done') ?></div><h1>We have your booking</h1><p class="sub"><?= $done ? 'Your reference is <strong>' . e($done['Reference']) . '</strong>. ' : '' ?>We will call or WhatsApp you to arrange a time. Send it on WhatsApp too and you can add photos.</p><div class="row"><?= waButton($text, 'Send on WhatsApp', 'btn btn-wa btn-lg') ?><?= callButton('btn btn-line btn-lg') ?></div></div></section>
-<?php else: ?>
-<section class="top top--plain"><div class="wrap top__in"><div><?= crumbs([['Book a repair', 'book']]) ?><h1>Book a repair</h1><p class="sub">Takes about a minute. R<?= e(callout()) ?> call-out, free if we repair.</p></div></div></section>
+<section class="top top--plain"><div class="wrap top__in"><div><?= crumbs([['Book a repair', 'book']]) ?><h1><?= $svc ? e($svc['name']) . ' in Soweto &amp; Joburg' : 'Book a repair' ?></h1><p class="sub">WhatsApp us, or fill in the form. It takes about a minute. R<?= e(callout()) ?> call-out, free if we repair.</p>
+  <div class="row"><?= waButton($wa, 'WhatsApp us', 'btn btn-wa btn-lg') ?><a class="btn btn-glass btn-lg" href="#book-form">Fill in the form</a></div></div></div></section>
 <section class="sec"><div class="wrap split">
-  <form class="form" method="post" enctype="multipart/form-data" data-busy>
+  <form class="form" id="book-form" method="post" enctype="multipart/form-data" data-busy>
     <?= csrfField() ?><input type="hidden" name="from_page" value="<?= e(parse_url((string) ($_SERVER['HTTP_REFERER'] ?? ''), PHP_URL_PATH) ?: '') ?>">
     <div class="hp" aria-hidden="true"><label>Website<input name="website" tabindex="-1" autocomplete="off"></label></div>
     <?php if ($errors): ?><div class="alert alert-error" role="alert"><i class="fa-solid fa-circle-exclamation"></i><div><?= implode('<br>', array_map('e', $errors)) ?></div></div><?php endif; ?>
@@ -74,7 +73,6 @@ if ($done !== null):
     <label class="check"><input type="checkbox" name="consent" value="1" required><span>You may contact me about this repair. See the <a href="<?= APP_URL ?>/privacy">privacy notice</a>.</span></label>
     <button class="btn btn-flame btn-lg" type="submit">Send booking</button>
   </form>
-  <aside><div class="box box--ink"><h3>Quicker on WhatsApp</h3><p>Send a photo or a video and your area.</p><?= waButton('Hi, I need an appliance repaired. I am in ', 'WhatsApp us') ?><?= callButton('btn btn-glass') ?></div><div class="box"><h3>You can count on</h3><ul class="ticks" style="margin:0"><li>Same-day service, 7 days</li><li>Free call-out if we repair</li><li><?= e(biz('biz_guarantee')) ?>-month guarantee</li></ul></div></aside>
+  <aside><div class="box box--ink"><h3>Quicker on WhatsApp</h3><p>Send a photo or a video and your area.</p><?= waButton($wa, 'WhatsApp us') ?><?= callButton('btn btn-glass') ?></div><div class="box"><h3>You can count on</h3><ul class="ticks" style="margin:0"><li>Same-day service, 7 days</li><li>Free call-out if we repair</li><li><?= e(biz('biz_guarantee')) ?>-month guarantee</li></ul></div></aside>
 </div></section>
-<?php endif;
-siteClose($done ? "<script>window.addEventListener('load',function(){if(window.gtag)gtag('event','generate_lead',{method:'booking_form'});if(window.fbq)fbq('track','Lead');});</script>" : '');
+<?php siteClose();

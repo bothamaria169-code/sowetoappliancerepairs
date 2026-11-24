@@ -119,7 +119,32 @@ Follow the sections in order. Each one ends with a test.
 
 **Test:** Analytics → **Realtime** shows you when you open the site on your phone.
 
-## 11. Facebook and Instagram (20 min) 🟦 ACCOUNT, optional
+## 11. Google Ads (15 min) 🟦 ACCOUNT + 🟩 ADMIN
+
+Google Ads counts two things: a **sent booking form** and a **tap on WhatsApp**.
+
+1. 🟦 https://ads.google.com → **Goals** → **Conversions** → **Summary** → open the website conversion → **Tag setup**. Copy the ID (`AW-…`).
+2. 🟩 **Settings → Google & Meta** → **Google Ads** → paste it → **Save**.
+3. 🟦 Goal **Submit lead form** → **Enter the URL that someone reaches…** → paste `sowetoappliancerepairs.co.za/thank-you`. Never the home page: that counts every visitor as a lead.
+4. 🟦 Goal **Contacts** → conversion name `WhatsApp click` → set up **manually using code**. Copy the event snippet (it contains `AW-…/…`).
+5. 🟩 **Settings → Google & Meta** → **Google Ads: WhatsApp click** → paste the whole snippet → **Save**.
+6. 🟦 Both conversions: **Primary**, **Count: One**. Do not also import the Google Analytics events as Primary, or leads count twice.
+
+Landing pages (Final URL):
+
+| Ad | Final URL |
+|---|---|
+| All repairs | `https://sowetoappliancerepairs.co.za/book` |
+| Fridges | `https://sowetoappliancerepairs.co.za/book?service=fridge-repairs` |
+| Washing machines | `https://sowetoappliancerepairs.co.za/book?service=washing-machine-repairs` |
+| Stoves | `https://sowetoappliancerepairs.co.za/book?service=stove-repairs` |
+| Ovens | `https://sowetoappliancerepairs.co.za/book?service=oven-repairs` |
+| Microwaves | `https://sowetoappliancerepairs.co.za/book?service=microwave-repairs` |
+| Geysers | `https://sowetoappliancerepairs.co.za/book?service=geyser-repairs` |
+
+**Test:** https://tagassistant.google.com → connect the site → tap **WhatsApp us**: one **Conversion** shows. Send a test booking: you land on `/thank-you`. A booking from an ad says **Google Ads** in 🟩 **Bookings**.
+
+## 12. Facebook and Instagram (20 min) 🟦 ACCOUNT, optional
 
 1. https://developers.facebook.com → **My Apps** → **Create App**.
 2. Add **Facebook Login** → **Settings** → **Valid OAuth Redirect URIs** → paste it from the table → **Save changes**.

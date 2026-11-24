@@ -153,7 +153,7 @@ function pageHead(string $title, array $opt = []): void
     $canon = $opt['canonical'] ?? null;
     $image = $opt['image'] ?? APP_URL . '/assets/img/og.jpg';
     $ga    = get_setting('ga4_id');
-    $ads   = get_setting('ads_id');
+    $ads   = get_setting('ads_id') ?: explode('/', get_setting('ads_wa_label'))[0];
     $pixel = get_setting('meta_pixel_id');
     ?>
 <!DOCTYPE html>
@@ -299,7 +299,7 @@ function siteClose(string $scripts = ''): void
   <a href="<?= APP_URL ?>/book"><i class="fa-solid fa-calendar-check"></i>Book</a>
 </nav>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
-<script>window.SAR = { url: <?= json_encode(APP_URL) ?>, csrf: <?= json_encode(csrfToken()) ?>, lcd: <?= json_encode(LCD_MAP, JSON_UNESCAPED_UNICODE) ?> };</script>
+<script>window.SAR = { url: <?= json_encode(APP_URL) ?>, csrf: <?= json_encode(csrfToken()) ?>, adsWa: <?= json_encode(get_setting('ads_wa_label')) ?>, lcd: <?= json_encode(LCD_MAP, JSON_UNESCAPED_UNICODE) ?> };</script>
 <script src="<?= asset('js/app.js') ?>" defer></script>
 <?= $scripts ?>
 </body>

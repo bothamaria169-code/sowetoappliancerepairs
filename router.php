@@ -10,7 +10,7 @@ if ($path !== '' && is_file($file)) return false;
 if ($path === '/admin') { require __DIR__ . '/admin/index.php'; return; }
 $go = function (string $script, array $get = []) { $_GET = $get + $_GET; require __DIR__ . '/' . $script; };
 if ($path === '') return $go('index.php');
-if (preg_match('#^/(services|areas|faults|error-codes|our-work|prices|about|contact|book|blog|reviews|privacy|terms|login)$#', $path, $m)) return $go($m[1] . '.php');
+if (preg_match('#^/(services|areas|faults|error-codes|our-work|prices|about|contact|book|thank-you|blog|reviews|privacy|terms|login)$#', $path, $m)) return $go($m[1] . '.php');
 if (preg_match('#^/(fridge|washing-machine|stove|oven|microwave|geyser)-repairs$#', $path)) return $go('service.php', ['s' => substr($path, 1)]);
 if (preg_match('#^/areas/([a-z0-9-]+)$#', $path, $m)) return $go('area.php', ['s' => $m[1]]);
 if (preg_match('#^/faults/([a-z0-9-]+)$#', $path, $m)) return $go('fault.php', ['s' => $m[1]]);
