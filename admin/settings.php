@@ -4,10 +4,11 @@ declare(strict_types=1);
 require_once __DIR__ . '/_shell.php';
 require_once BASE_DIR . '/includes/media.php';
 
-$tabs = ['business' => 'Business', 'articles' => 'Article writer', 'ai' => 'AI (Groq)', 'email' => 'Email', 'tracking' => 'Google & Meta', 'photos' => 'ImageKit'];
+$tabs = ['business' => 'Business', 'bookings' => 'Bookings', 'articles' => 'Article writer', 'ai' => 'AI (Groq)', 'email' => 'Email', 'tracking' => 'Google & Meta', 'photos' => 'ImageKit'];
 $tab = isset($tabs[$_GET['tab'] ?? '']) ? $_GET['tab'] : 'business';
 $fields = [
     'business' => ['biz_phone', 'biz_whatsapp', 'biz_email', 'biz_callout', 'biz_guarantee', 'biz_hours', 'biz_facebook', 'biz_instagram', 'biz_gbp', 'biz_review_url'],
+    'bookings' => ['booking_slots', 'booking_capacity', 'booking_notice_hours', 'booking_days_ahead', 'booking_blocked', 'reminders_on', 'agenda_on'],
     'articles' => ['articles_on', 'articles_review', 'article_hour'],
     'ai'       => ['ai_enabled', 'ai_monthly_limit', 'groq_model'],
     'email'    => ['notify_email', 'smtp_host', 'smtp_port', 'smtp_user', 'mail_from_name'],
@@ -15,7 +16,7 @@ $fields = [
     'photos'   => [],
 ];
 $secrets = ['email' => ['smtp_pass'], 'ai' => ['groq_api_key']];
-$checks = ['articles_on', 'ai_enabled'];
+$checks = ['articles_on', 'ai_enabled', 'reminders_on', 'agenda_on'];
 $links = ['biz_facebook', 'biz_instagram', 'biz_gbp', 'biz_review_url'];
 $week = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -41,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $v = trim((string) ($_POST[$k] ?? ''));
             if (in_array($k, $checks, true)) $v = !empty($_POST[$k]) ? '1' : '0';
             if (in_array($k, $links, true) && $v !== '' && !preg_match('#^https://#', $v)) { flash('error', 'Links must start with https://'); continue; }
-            if (in_array($k, ['biz_callout', 'biz_guarantee', 'biz_whatsapp', 'article_hour', 'ai_monthly_limit'], true)) $v = preg_replace('/\D/', '', $v);
+            if (in_array($k, ['biz_callout', 'biz_guarantee', 'biz_whatsapp', 'article_hour', 'ai_monthly_limit', 'booking_capacity', 'booking_notice_hours', 'booking_days_ahead'], true)) $v = preg_replace('/\D/', '', $v);
             if (in_array($k, ['gsc_verification', 'bing_verification'], true) && preg_match('/content="([^"]+)"/', $v, $m)) $v = $m[1];
             if (in_array($k, ['ads_id', 'ads_wa_label'], true) && $v !== '') {
                 if (!preg_match($k === 'ads_id' ? '#AW-\d+#' : '#AW-\d+/[\w-]+#', $v, $m)) { flash('error', $k === 'ads_id' ? 'The Google Ads ID looks like AW-123456789.' : 'The WhatsApp conversion looks like AW-123456789/AbCdEf. You can paste the whole event snippet.'); continue; }
@@ -49,6 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             set_setting($k, $v);
         }
+        if ($tab === 'bookings') set_setting('booking_days_off', implode(',', array_intersect($week, (array) ($_POST['booking_days_off'] ?? []))));
         if ($tab === 'articles') set_setting('article_days', implode(',', array_intersect($week, (array) ($_POST['article_days'] ?? []))));
         foreach ($secrets[$tab] ?? [] as $k) save_secret_setting($k, (string) ($_POST[$k] ?? ''));
         audit('settings_save', $tab);
@@ -68,6 +70,13 @@ adminOpen('settings', 'Settings', 'Changes apply straight away.');
 <?php if ($tab === 'business'): ?>
   <p class="hint" style="margin-bottom:1rem">Used on every page and in Google's business data. Keep the name and phone the same as your Google Business Profile.</p><div class="form-grid">
   <?= $in('biz_phone', 'Phone', 'as shown', biz('biz_phone')) . $in('biz_whatsapp', 'WhatsApp', 'digits only, 27…', biz('biz_whatsapp')) . $in('biz_email', 'Email', '', biz('biz_email')) . $in('biz_hours', 'Hours', '', biz('biz_hours')) . $in('biz_callout', 'Call-out fee (R)', '', biz('biz_callout')) . $in('biz_guarantee', 'Guarantee (months)', '', biz('biz_guarantee')) . $in('biz_facebook', 'Facebook link') . $in('biz_instagram', 'Instagram link') . $in('biz_gbp', 'Google Business Profile link') . $in('biz_review_url', 'Google review link') ?></div>
+<?php elseif ($tab === 'bookings'): ?>
+  <p class="hint" style="margin-bottom:1rem">The days and times customers can choose on the booking page.</p>
+  <div class="field"><label for="booking_slots">Times <span class="hint">one per line, like 08:00-10:00</span></label><textarea id="booking_slots" name="booking_slots" style="min-height:140px"><?= e(implode("\n", bookingSlots())) ?></textarea></div>
+  <div class="field"><label>Days you do not work</label><div class="chips"><?php $off = explode(',', get_setting('booking_days_off', '')); foreach ($week as $d): ?><label class="chip-check"><input type="checkbox" name="booking_days_off[]" value="<?= $d ?>" <?= in_array($d, $off, true) ? 'checked' : '' ?>><?= $d ?></label><?php endforeach; ?></div></div>
+  <div class="field"><label for="booking_blocked">Dates you are away <span class="hint">one per line, like 2026-12-25</span></label><textarea id="booking_blocked" name="booking_blocked" style="min-height:80px"><?= e(get_setting('booking_blocked')) ?></textarea></div>
+  <div class="form-grid"><?= $in('booking_capacity', 'Customers per time', 'how many you can visit', '2', 'number') . $in('booking_notice_hours', 'Hours of notice you need', '', '2', 'number') . $in('booking_days_ahead', 'Days ahead they can book', '', '14', 'number') ?></div>
+  <?= $chk('reminders_on', 'Email customers a reminder in the day before the visit', '1') . $chk('agenda_on', 'Email me the list of visits each morning', '1') ?>
 <?php elseif ($tab === 'articles'): ?>
   <?= $chk('articles_on', 'Write articles by themselves', '1') ?>
   <div class="field"><label>Days</label><div class="chips"><?php $on = explode(',', get_setting('article_days', 'Tue,Fri')); foreach ($week as $d): ?><label class="chip-check"><input type="checkbox" name="article_days[]" value="<?= $d ?>" <?= in_array($d, $on, true) ? 'checked' : '' ?>><?= $d ?></label><?php endforeach; ?></div></div>
@@ -78,7 +87,7 @@ adminOpen('settings', 'Settings', 'Changes apply straight away.');
   <?= $chk('ai_enabled', 'AI on (articles, chat, captions)', '1') . $sec('groq_api_key', 'Groq API key', 'console.groq.com → API Keys. Blank keeps the current one.') ?>
   <div class="field"><label for="groq_model">Model</label><select id="groq_model" name="groq_model"><option value="">Choose the best one for me</option><?php foreach (groqModels() as $m): ?><option <?= get_setting('groq_model') === $m ? 'selected' : '' ?>><?= e($m) ?></option><?php endforeach; ?></select></div><?= $in('ai_monthly_limit', 'Calls per month', 'stops runaway use', '600', 'number') ?>
 <?php elseif ($tab === 'email'): ?>
-  <div class="form-grid"><?= $in('notify_email', 'Send bookings to', '', ADMIN_EMAIL, 'email') . $in('mail_from_name', 'From name', '', APP_NAME) . $in('smtp_user', 'Sending mailbox', '', SMTP_USER) . $sec('smtp_pass', 'Mailbox password', 'blank keeps the saved one') . $in('smtp_host', 'Mail server', '', SMTP_HOST) . $in('smtp_port', 'Port', '465 or 587', (string) SMTP_PORT) ?><div class="field"><label for="test_to">Send the test to</label><input id="test_to" type="email" name="test_to" placeholder="<?= e($ADMIN['email']) ?>"></div></div>
+  <div class="form-grid"><?= $in('notify_email', 'Send bookings to', 'more than one? put a comma between', ADMIN_EMAIL) . $in('mail_from_name', 'From name', '', APP_NAME) . $in('smtp_user', 'Sending mailbox', '', SMTP_USER) . $sec('smtp_pass', 'Mailbox password', 'blank keeps the saved one') . $in('smtp_host', 'Mail server', '', SMTP_HOST) . $in('smtp_port', 'Port', '465 or 587', (string) SMTP_PORT) ?><div class="field"><label for="test_to">Send the test to</label><input id="test_to" type="email" name="test_to" placeholder="<?= e($ADMIN['email']) ?>"></div></div>
 <?php elseif ($tab === 'tracking'): ?>
   <?= $in('gsc_verification', 'Google Search Console code', 'paste the whole meta tag or just the code') . $in('bing_verification', 'Bing Webmaster code') . $in('ga4_id', 'Google Analytics 4', 'G-…') . $in('ads_id', 'Google Ads', 'AW-…') . $in('ads_wa_label', 'Google Ads: WhatsApp click', 'AW-…/label, or paste the whole event snippet') . $in('meta_pixel_id', 'Meta Pixel', 'numbers only') ?>
 <?php else: ?>

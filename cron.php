@@ -19,12 +19,16 @@ set_time_limit(600);
 require_once __DIR__ . '/includes/auth.php';
 require_once __DIR__ . '/includes/content.php';
 require_once __DIR__ . '/includes/articles.php';
+require_once __DIR__ . '/includes/bookings.php';
 require_once __DIR__ . '/includes/social.php';
 
 $db = getDB();
 $say = fn(string $m) => print(date('Y-m-d H:i') . ' ' . $m . "\n");
 if ((int) $db->query("SELECT GET_LOCK('sar_cron', 1)")->fetchColumn() !== 1) exit;
 set_setting('scheduler_heartbeat', (string) time());
+
+// 0. Bookings: retry failed emails, reminders, today's visits.
+foreach (bookingCron() as $line) $say($line);
 
 // 1. Write an article on the chosen days, after the chosen hour, once a day.
 $days  = array_filter(explode(',', get_setting('article_days', 'Tue,Fri')));

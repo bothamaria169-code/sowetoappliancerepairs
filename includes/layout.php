@@ -316,6 +316,22 @@ function notFound(): never
     exit;
 }
 
+/** Day and time picker for a visit (booking form and the customer's visit page). */
+function whenPicker(array $days, string $date = '', string $slot = ''): string
+{
+    if (!$days) return '<div class="alert alert-info"><i class="fa-solid fa-circle-info"></i><span>Online times are full. Please WhatsApp or call ' . e(biz('biz_phone')) . '.</span></div>';
+    if (!isset($days[$date])) $date = '';
+    $out = '<fieldset class="field when" data-when><legend>When can we come? <small>Choose a day</small></legend><div class="when__days">';
+    foreach ($days as $d => $row) {
+        $t = strtotime($d);
+        $top = $d === date('Y-m-d') ? 'Today' : ($d === date('Y-m-d', strtotime('+1 day')) ? 'Tomorrow' : date('D', $t));
+        $out .= '<label><input type="radio" name="pref_date" value="' . $d . '" required' . ($d === $date ? ' checked' : '') . ' data-free="' . e(implode(' ', array_keys(array_filter($row)))) . '"><span><small>' . $top . '</small><b>' . date('j', $t) . '</b><small>' . date('M', $t) . '</small></span></label>';
+    }
+    $out .= '</div></fieldset><fieldset class="field when" data-slots><legend>And at what time?</legend><div class="when__slots">';
+    foreach (bookingSlots() as $s) $out .= '<label><input type="radio" name="pref_slot" value="' . $s . '" required' . ($s === $slot ? ' checked' : '') . '><span>' . e(slotLabel($s)) . '</span></label>';
+    return $out . '</div><p class="when__hint">We confirm the exact time with you.</p></fieldset>';
+}
+
 /** FAQ accordion. */
 function faqHtml(array $faqs): string
 {

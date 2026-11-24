@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!$errors && rateLimited('review', 3, 1440)) $errors[] = 'You have already sent a review today. Thank you!';
     if (!$errors) {
         $db->prepare('INSERT INTO reviews (full_name, area, service, stars, body) VALUES (?,?,?,?,?)')->execute([$name, areas()[$_POST['area'] ?? ''][0] ?? null, isset(services()[$_POST['service'] ?? '']) ? $_POST['service'] : null, $stars, $body]);
-        sendMail(get_setting('notify_email', ADMIN_EMAIL), "New review from {$name} ({$stars} stars)", emailLayout('New review to approve', '<p>' . e($body) . '</p>', 'Open in admin', APP_URL . '/admin/reviews.php'), [], null, 'review');
+        sendMail(notifyEmails(), "New review from {$name} ({$stars} stars)", emailLayout('New review to approve', '<p>' . e($body) . '</p>', 'Open in admin', APP_URL . '/admin/reviews.php'), [], null, 'review');
         flash('success', 'Thank you. Your review will show once we have checked that it is from a customer.');
         redirect('reviews');
     }

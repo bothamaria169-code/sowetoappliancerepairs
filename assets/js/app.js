@@ -42,8 +42,8 @@
     if (navigator.sendBeacon) navigator.sendBeacon(SAR.url + '/ajax/tap.php', d);
     if (window.gtag) {
       gtag('event', a.dataset.tap === 'whatsapp' ? 'whatsapp_click' : 'call_click', { method: a.dataset.tap });
-      // A WhatsApp from the thank-you page is the same customer as the booking: not a second lead for Google Ads
-      if (a.dataset.tap === 'whatsapp' && SAR.adsWa && !/\/thank-you$/.test(location.pathname)) gtag('event', 'conversion', { send_to: SAR.adsWa });
+      // A WhatsApp from the thank-you or visit page is the same customer as the booking: not a second lead for Google Ads
+      if (a.dataset.tap === 'whatsapp' && SAR.adsWa && !/\/(thank-you|visit)$/.test(location.pathname)) gtag('event', 'conversion', { send_to: SAR.adsWa });
     }
     if (window.fbq) fbq('track', 'Contact');
   });
@@ -150,6 +150,16 @@
       }).catch(function () { wait.textContent = 'I could not connect. Please use WhatsApp below.'; }).then(function () { log.scrollTop = log.scrollHeight; });
     };
   }
+
+  // Day and time picker: only the times that are still open on the chosen day
+  $$('[data-when]').forEach(function (w) {
+    var form = w.form || w.closest('form'), slots = $$('[data-slots] input', form);
+    var upd = function () {
+      var d = $('input:checked', w), free = d ? d.dataset.free.split(' ') : null;
+      slots.forEach(function (i) { i.disabled = !!free && free.indexOf(i.value) < 0; if (i.disabled) i.checked = false; });
+    };
+    w.addEventListener('change', upd); upd();
+  });
 
   // Copy buttons (admin)
   $$('[data-copy]').forEach(function (b) { b.addEventListener('click', function () { navigator.clipboard.writeText(b.dataset.copy); toast('Copied'); }); });

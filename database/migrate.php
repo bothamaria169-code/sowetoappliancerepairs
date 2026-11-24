@@ -6,7 +6,7 @@ declare(strict_types=1);
  * deploy; no SQL import needed. Works on MySQL 8 and MariaDB. No table or
  * column is named after a MySQL 8 reserved word.
  */
-const SCHEMA_VERSION = 2;
+const SCHEMA_VERSION = 3;
 
 function runMigrations(PDO $db): void
 {
@@ -17,6 +17,7 @@ function runMigrations(PDO $db): void
         try {
             if ($v < 1) { migrationV1($db); seedTopics($db); seedPosts($db); }
             elseif ($v < 2) seedTopics($db);   // microwave topics
+            if ($v < 3) migrationV3($db);
             $db->prepare("REPLACE INTO app_settings (k, v) VALUES ('schema_version', ?)")->execute([(string) SCHEMA_VERSION]);
         } finally {
             $db->query("SELECT RELEASE_LOCK('sar_migrate')");
@@ -94,6 +95,45 @@ function migrationV1(PDO $db): void
     $db->exec("CREATE TABLE IF NOT EXISTS social_posts (
         id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, post_id INT UNSIGNED NULL, platform VARCHAR(12) NOT NULL, caption TEXT NULL,
         ok TINYINT(1) NOT NULL DEFAULT 0, remote_id VARCHAR(120) NULL, error VARCHAR(500) NULL, created_at {$now}, INDEX (created_at)){$t}");
+}
+
+function columnExists(PDO $db, string $table, string $column): bool
+{
+    $s = $db->prepare('SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND COLUMN_NAME = ?');
+    $s->execute([$table, $column]);
+    return (bool) $s->fetchColumn();
+}
+
+/** Booking times, tick boxes, planned visits, email templates and lead history. */
+function migrationV3(PDO $db): void
+{
+    $t = ' ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci';
+    $cols = [
+        'token' => 'CHAR(32) NULL', 'source' => "VARCHAR(20) NOT NULL DEFAULT 'website'",
+        'pref_date' => 'DATE NULL', 'pref_slot' => 'VARCHAR(20) NULL',
+        'visit_date' => 'DATE NULL', 'visit_from' => 'TIME NULL', 'visit_to' => 'TIME NULL',
+        'contacted_at' => 'DATETIME NULL', 'went_at' => 'DATETIME NULL', 'repaired_at' => 'DATETIME NULL', 'lost_at' => 'DATETIME NULL', 'lost_reason' => 'VARCHAR(190) NULL',
+        'confirmed_at' => 'DATETIME NULL', 'needs_reply' => 'TINYINT(1) NOT NULL DEFAULT 0', 'reply_note' => 'VARCHAR(400) NULL',
+        'reminder_sent_at' => 'DATETIME NULL', 'admin_notified_at' => 'DATETIME NULL', 'notify_tries' => 'INT NOT NULL DEFAULT 0',
+    ];
+    foreach ($cols as $c => $def) if (!columnExists($db, 'bookings', $c)) $db->exec("ALTER TABLE bookings ADD COLUMN {$c} {$def}");
+    $db->exec('CREATE TABLE IF NOT EXISTS booking_events (
+        id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, booking_id INT UNSIGNED NOT NULL, kind VARCHAR(20) NOT NULL, detail VARCHAR(500) NULL,
+        admin_id INT UNSIGNED NULL, created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, INDEX (booking_id, created_at),
+        FOREIGN KEY (booking_id) REFERENCES bookings(id) ON DELETE CASCADE)' . $t);
+    $db->exec('CREATE TABLE IF NOT EXISTS email_templates (
+        tkey VARCHAR(40) PRIMARY KEY, subject VARCHAR(255) NULL, body TEXT NULL, wa TEXT NULL, updated_at DATETIME NULL)' . $t);
+
+    // Leads that were there before: keep their stage, and give each a private link.
+    $db->exec("UPDATE bookings SET contacted_at = COALESCE(updated_at, created_at) WHERE contacted_at IS NULL AND status IN ('contacted','booked','done')");
+    $db->exec("UPDATE bookings SET repaired_at = COALESCE(updated_at, created_at) WHERE repaired_at IS NULL AND status = 'done'");
+    $db->exec("UPDATE bookings SET lost_at = COALESCE(updated_at, created_at) WHERE lost_at IS NULL AND status = 'lost'");
+    $db->exec("UPDATE bookings SET status = 'contacted' WHERE status = 'booked' AND visit_date IS NULL");
+    $db->exec('UPDATE bookings SET admin_notified_at = created_at WHERE admin_notified_at IS NULL');
+    $u = $db->prepare('UPDATE bookings SET token = ? WHERE id = ?');
+    foreach ($db->query('SELECT id FROM bookings WHERE token IS NULL')->fetchAll(PDO::FETCH_COLUMN) as $id) $u->execute([bin2hex(random_bytes(16)), $id]);
+    try { $db->exec('CREATE UNIQUE INDEX bookings_token ON bookings (token)'); } catch (PDOException) { /* already there */ }
+    try { $db->exec('CREATE INDEX bookings_visit ON bookings (visit_date, visit_from)'); } catch (PDOException) { /* already there */ }
 }
 
 /** Real searches, in the order we want to win them. */

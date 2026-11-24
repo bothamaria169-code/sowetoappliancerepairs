@@ -7,7 +7,7 @@ require_once __DIR__ . '/includes/boot.php';
 header('Content-Type: text/plain; charset=utf-8');
 $f = (string) ($_GET['f'] ?? '');
 if ($f === 'robots') {
-    echo "User-agent: *\nDisallow: /admin/\nDisallow: /ajax/\nDisallow: /login\nDisallow: /cron.php\n\nSitemap: " . APP_URL . "/sitemap.xml\n";
+    echo "User-agent: *\nDisallow: /admin/\nDisallow: /ajax/\nDisallow: /login\nDisallow: /visit\nDisallow: /cron.php\n\nSitemap: " . APP_URL . "/sitemap.xml\n";
 } elseif ($f === 'llms') {
     $c = callout();
     echo '# ' . APP_NAME . "\n\n> " . APP_TAGLINE . "\n\n- Phone and WhatsApp: " . biz('biz_phone') . "\n- Call-out: R{$c}, free when we do the repair\n- Guarantee: " . biz('biz_guarantee') . " months on repairs\n- Hours: 7 days a week, same-day service\n- Areas: " . implode(', ', array_column(areas(), 0)) . "\n\n## Services\n";

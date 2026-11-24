@@ -11,8 +11,12 @@ A lead-generating website for a mobile appliance repair service. It takes bookin
 | 20 area pages (`/areas/soweto` …) | `area.php`, list in `areas.php` |
 | 26 fault guides (`/faults/…`) | `fault.php`, list in `faults.php`, text in `includes/faults.php` |
 | Error code lookup | `error-codes.php` |
-| Booking form and Google Ads landing pages (`/book?service=fridge-repairs` …) | `book.php` |
+| Booking form with day and time (times in **Settings → Bookings**) and Google Ads landing pages (`/book?service=fridge-repairs` …) | `book.php` |
 | Thank-you page (only after a booking; Google Ads counts it) | `thank-you.php` |
+| Customer's page to confirm or change the visit | `visit.php` |
+| Lead list, tick boxes, planning a visit | `admin/bookings.php`, `ajax/lead.php`, `includes/bookings.php` |
+| Visits by day | `admin/visits.php` |
+| Email and WhatsApp templates | `admin/templates.php`, originals in `includes/templates.php` |
 | Prices, Our work, Reviews, About, Contact | `prices.php`, `our-work.php`, `reviews.php`, `about.php`, `contact.php` |
 | Articles | `blog.php`, `post.php` |
 | Article writer | `includes/articles.php` (quality gate + safety editor) |
@@ -24,6 +28,14 @@ A lead-generating website for a mobile appliance repair service. It takes bookin
 | Database tables | `database/migrate.php` (creates everything on the first page load) |
 | Sitemap, RSS, robots, llms.txt, IndexNow | `sitemap.php`, `feed.php`, `textfile.php` |
 | Deploy | `.cpanel.yml` → `public_html` |
+
+## How a lead works
+
+1. A customer books a **day and time**. You get an email; the customer gets one if they left an address.
+2. 🟩 **Leads** → open it → choose the date and time → **Save and email** or **Save and WhatsApp**. The message comes from a template and you can change it first.
+3. The customer gets a private page to **confirm**, ask for **another time** or **cancel**. You get an email when they do.
+4. In the list, tick **Contacted**, **Went to site**, **Repaired** or **Not going ahead**. Untick to undo. WhatsApp and Call tick **Contacted** for you.
+5. Cron emails a reminder in the day before the visit, sends you the day's visits each morning, and tries again if a booking email failed.
 
 ## How the traffic engine works
 

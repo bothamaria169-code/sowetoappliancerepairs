@@ -15,7 +15,10 @@ function adminOpen(string $active, string $title, string $sub = '', string $acti
 {
     global $ADMIN;
     $db = getDB();
-    $newB   = (int) $db->query("SELECT COUNT(*) FROM bookings WHERE status = 'new'")->fetchColumn();
+    $newB   = (int) $db->query("SELECT COUNT(*) FROM bookings WHERE status = 'new' OR needs_reply = 1")->fetchColumn();
+    $td = $db->prepare('SELECT COUNT(*) FROM bookings WHERE visit_date = ? AND lost_at IS NULL AND went_at IS NULL AND repaired_at IS NULL');
+    $td->execute([date('Y-m-d')]);
+    $today  = (int) $td->fetchColumn();
     $newR   = (int) $db->query('SELECT COUNT(*) FROM reviews WHERE is_approved = 0')->fetchColumn();
     $drafts = (int) $db->query('SELECT COUNT(*) FROM posts WHERE is_published = 0')->fetchColumn();
     $failed = (int) $db->query("SELECT COUNT(*) FROM sent_emails WHERE status = 'failed' AND created_at > (NOW() - INTERVAL 1 DAY)")->fetchColumn();
@@ -23,7 +26,8 @@ function adminOpen(string $active, string $title, string $sub = '', string $acti
     $nav = [
         'Customers' => [
             ['dashboard', 'index.php',    'fa-gauge-high',   'Dashboard', 0],
-            ['bookings',  'bookings.php', 'fa-calendar-check', 'Bookings', $newB],
+            ['bookings',  'bookings.php', 'fa-list-check', 'Leads', $newB],
+            ['visits',    'visits.php',   'fa-calendar-days', 'Visits', $today],
             ['reviews',   'reviews.php',  'fa-star',         'Reviews', $newR],
             ['chats',     'chats.php',    'fa-comments',     'Chats', 0],
         ],
@@ -36,6 +40,7 @@ function adminOpen(string $active, string $title, string $sub = '', string $acti
         ],
         'Setup' => [
             ['settings',  'settings.php', 'fa-sliders',      'Settings', 0],
+            ['templates', 'templates.php', 'fa-pen-to-square', 'Email templates', 0],
             ['emails',    'emails.php',   'fa-envelope-open-text', 'Sent log', $failed],
             ['guide',     'guide.php',    'fa-book',         'Guide', 0],
             ['account',   'account.php',  'fa-user-gear',    'My account', 0],
@@ -68,7 +73,7 @@ function adminOpen(string $active, string $title, string $sub = '', string $acti
     <button class="icon-btn adm-burger" id="admBurger" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
     <form class="adm-search" action="<?= APP_URL ?>/admin/bookings.php" method="get" role="search">
       <i class="fa-solid fa-magnifying-glass"></i>
-      <input type="search" name="q" placeholder="Search bookings by ref, name, phone or area…" aria-label="Search bookings" value="<?= e($_GET['q'] ?? '') ?>">
+      <input type="search" name="q" placeholder="Search leads by ref, name, phone or area…" aria-label="Search bookings" value="<?= e($_GET['q'] ?? '') ?>">
     </form>
     <div class="adm-top__right">
       <button class="icon-btn" id="themeBtn" title="Switch light / dark" aria-label="Switch theme"><i class="fa-solid fa-circle-half-stroke"></i></button>

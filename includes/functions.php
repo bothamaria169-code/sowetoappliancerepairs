@@ -19,7 +19,7 @@ function postText(string $key, int $len = 255): string
     return mb_substr(trim((string) ($_POST[$key] ?? '')), 0, $len);
 }
 
-const BOOKING_STATUSES = ['new' => 'New', 'contacted' => 'Contacted', 'booked' => 'Booked in', 'done' => 'Repaired', 'lost' => 'Not going ahead'];
+const BOOKING_STATUSES = ['new' => 'New', 'contacted' => 'Contacted', 'booked' => 'Visit booked', 'visited' => 'Went to site', 'done' => 'Repaired', 'lost' => 'Not going ahead'];
 
 /** Business details shown on every page; editable in Admin → Settings → Business. */
 function biz(string $key): string

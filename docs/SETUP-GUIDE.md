@@ -69,6 +69,9 @@ Follow the sections in order. Each one ends with a test.
 1. 🟧 **Email Accounts** → check that `admin@sowetoappliancerepairs.co.za` exists (or **Create** it). Note the password.
 2. 🟧 **Email Deliverability** → **Repair** if it is not **Valid**.
 3. 🟩 **Settings → Email** → **Mailbox password** → **Save**.
+4. Same page → **Send bookings to**: add your own Gmail after a comma, so that you always see new bookings.
+5. 🟩 **Settings → Bookings**: the times customers can choose, days off and dates you are away.
+6. 🟩 **Email templates**: read them once and change what you like.
 
 **Test:** 🟩 **Settings → Email** → type your Gmail → **Send test email**.
 
@@ -142,7 +145,7 @@ Landing pages (Final URL):
 | Microwaves | `https://sowetoappliancerepairs.co.za/book?service=microwave-repairs` |
 | Geysers | `https://sowetoappliancerepairs.co.za/book?service=geyser-repairs` |
 
-**Test:** https://tagassistant.google.com → connect the site → tap **WhatsApp us**: one **Conversion** shows. Send a test booking: you land on `/thank-you`. A booking from an ad says **Google Ads** in 🟩 **Bookings**.
+**Test:** https://tagassistant.google.com → connect the site → tap **WhatsApp us**: one **Conversion** shows. Send a test booking: you land on `/thank-you`. A booking from an ad says **Google Ads** in 🟩 **Leads**.
 
 ## 12. Facebook and Instagram (20 min) 🟦 ACCOUNT, optional
 
