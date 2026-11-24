@@ -8,6 +8,9 @@ declare(strict_types=1);
  * Admin → Settings → Business through biz().
  */
 
+/** Brands named in our Google Ads. Every brand in an ad must also be on the landing page (/book). */
+const REPAIR_BRANDS = 'Samsung, LG, Hisense, Defy, Smeg and Whirlpool';
+
 /** @return array<string, array> */
 function services(): array
 {

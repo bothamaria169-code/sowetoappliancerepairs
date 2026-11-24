@@ -51,7 +51,8 @@ siteOpen($svc ? $svc['name'] . ' in Soweto & Joburg | Book Today' : 'Book an App
 ]);
 ?>
 <section class="top top--plain"><div class="wrap top__in"><div><?= crumbs([['Book a repair', 'book']]) ?><h1><?= $svc ? e($svc['name']) . ' in Soweto &amp; Joburg' : 'Book a repair' ?></h1><p class="sub">WhatsApp us, or fill in the form. It takes about a minute. R<?= e(callout()) ?> call-out, free if we repair.</p>
-  <div class="row"><?= waButton($wa, 'WhatsApp us', 'btn btn-wa btn-lg') ?><a class="btn btn-glass btn-lg" href="#book-form">Fill in the form</a></div></div></div></section>
+  <div class="row"><?= waButton($wa, 'WhatsApp us', 'btn btn-wa btn-lg') ?><a class="btn btn-glass btn-lg" href="#book-form">Fill in the form</a></div>
+  <p class="sub">We repair <?= e(REPAIR_BRANDS) ?>. <small>We are an independent repairer, not a service centre of these brands.</small></p></div></div></section>
 <section class="sec"><div class="wrap split">
   <form class="form" id="book-form" method="post" enctype="multipart/form-data" data-busy>
     <?= csrfField() ?><input type="hidden" name="from_page" value="<?= e(parse_url((string) ($_SERVER['HTTP_REFERER'] ?? ''), PHP_URL_PATH) ?: '') ?>">
